@@ -23,5 +23,6 @@ private:
     float minimumDistance;
     float alignDistance;
     float groupDistance;
+    bool followMouse = true; //switch to false to run from mouse
     
 };

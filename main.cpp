@@ -5,7 +5,6 @@
 using namespace std;
 
 int main() {
-
     SetRandomSeed(time(0));
     
     array<Boid*,BOIDS_NUMBER> boids{};
@@ -35,6 +34,7 @@ int main() {
     cout << "Hello World" << endl;
 
     InitWindow(600, 600, "My first Raylib window!");
+    Texture2D boidTex = LoadTexture("tropical-fish.png");
     SetTargetFPS(60);
 
     while (!WindowShouldClose()) {
@@ -44,11 +44,14 @@ int main() {
             DrawRectangleRec(obstacle->getRectangle(),BLACK);
         }
         for(Boid* boid:boids){
-            DrawCircle(boid->getPosition().x+boid->getDirection().x*150.f,boid->getPosition().y+boid->getDirection().y*150.f,10,RED);
+            //DrawCircle(boid->getPosition().x+boid->getDirection().x*150.f,boid->getPosition().y+boid->getDirection().y*150.f,10,RED);
             //cout<<boid->getDirection().x<<" "<<boid->getDirection().y<<endl;
             //cout << Vector2Angle({1.f,0.f},boid->getDirection())*(180.f/PI)<<endl;
-            DrawPoly(boid->getPosition(), 3, 20,Vector2Angle({1.f,0.f},boid->getDirection())*(180.f/PI), BLUE);
+            //DrawPoly(boid->getPosition(), 3, 20,Vector2Angle({1.f,0.f},boid->getDirection())*(180.f/PI), BLUE);
             boid->update(boids,obstacles);
+            float angle=Vector2Angle({1.f,0.f},boid->getDirection())*(180.f/PI);
+            DrawTexturePro(boidTex,{0,0,512,512},{boid->getPosition().x-10.0f,boid->getPosition().y-10.0f,20,20},{10.f,10.f},angle,WHITE);
+            
         }
         EndDrawing();
     }
