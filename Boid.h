@@ -9,6 +9,9 @@ public:
     ~Boid(){}
     Vector2 getPosition(){return position;}
     Vector2 getDirection(){return direction;}
+    Color getTeam(){return team;}
+    Color getPredator(){return predator;}
+    Color getPrey(){return prey;}
     void update(std::array<Boid*,BOIDS_NUMBER> others, std::array<Obstacle*,OBSTACLES_NUMBER> obstacles);
 
 private:
@@ -23,6 +26,10 @@ private:
     float minimumDistance;
     float alignDistance;
     float groupDistance;
-    bool followMouse = true; //switch to false to run from mouse
+    bool followMouse = false; //switch to false to run from mouse
+    Color team;
+    Color predator;
+    Color prey;
+    Vector2 avoidPredator(std::array<Boid*,BOIDS_NUMBER> others);
     
 };
