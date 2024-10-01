@@ -53,13 +53,13 @@ Vector2 Boid::avoidObstacles(std::array<Obstacle*,OBSTACLES_NUMBER> obstacles){
         if(position.x<minimumDistance*1.5f){
             res = res + Vector2{1.f,0.f};
         }
-        if(position.x>600-minimumDistance*1.5f){
+        if(position.x>window_size-minimumDistance*1.5f){
             res = res + Vector2{-1.f,0.f};
         }
         if(position.y<minimumDistance*1.5f){
             res = res + Vector2{0.f,1.f};
         }
-        if(position.y>600-minimumDistance*1.5f){
+        if(position.y>window_size-minimumDistance*1.5f){
             res = res + Vector2{0.f,-1.f};
         }
         res = Vector2Normalize(res);

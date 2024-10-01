@@ -1,7 +1,6 @@
 ﻿#pragma once
 #include <memory>
 #include <vector>
-
 #include "Obstacle.h"
 #include "Util.h"
 

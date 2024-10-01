@@ -3,8 +3,9 @@
 #include "raylib.h"
 #include "raymath.h"
 
-#define BOIDS_NUMBER 33
+#define BOIDS_NUMBER 300
 #define OBSTACLES_NUMBER 4
+static int window_size = 800;
 
 static Vector2 operator+ (Vector2 left,Vector2 right){
     return Vector2Add(left,right);
