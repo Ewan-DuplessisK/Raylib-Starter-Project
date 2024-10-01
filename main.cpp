@@ -11,7 +11,7 @@ int main() {
     array<Obstacle*,OBSTACLES_NUMBER> obstacles{};
 
     //set up boids
-    for(int i=0;i<BOIDS_NUMBER-1/*/3*/;i++){
+    for(int i=0;i<BOIDS_NUMBER/3;i++){
         Vector2 posP = Vector2{float(GetRandomValue(11,589)),float(GetRandomValue(11,589))};
         Vector2 dirP = Vector2{GetRandomValue(0,100)/100.f,GetRandomValue(0,100)/100.f};
         float speedP = 2.f;
@@ -23,7 +23,7 @@ int main() {
         Color preyP = YELLOW;
         boids.at(i)=new Boid(posP,dirP,speedP,mDisP,aDisP,gDisP,teamP,predatorP,preyP);
     }
-    /*for(int i=0;i<BOIDS_NUMBER/3;i++){
+    for(int i=0;i<BOIDS_NUMBER/3;i++){
         Vector2 posP = Vector2{float(GetRandomValue(11,589)),float(GetRandomValue(11,589))};
         Vector2 dirP = Vector2{GetRandomValue(0,100)/100.f,GetRandomValue(0,100)/100.f};
         float speedP = 2.f;
@@ -34,8 +34,8 @@ int main() {
         Color predatorP = RED;
         Color preyP = BLUE;
         boids.at(11+i)=new Boid(posP,dirP,speedP,mDisP,aDisP,gDisP,teamP,predatorP,preyP);
-    }*/
-    for(int i=0;i<1/*BOIDS_NUMBER/3*/;i++){
+    }
+    for(int i=0;i<BOIDS_NUMBER/3;i++){
         Vector2 posP = Vector2{float(GetRandomValue(11,589)),float(GetRandomValue(11,589))};
         Vector2 dirP = Vector2{GetRandomValue(0,100)/100.f,GetRandomValue(0,100)/100.f};
         float speedP = 2.f;
@@ -45,7 +45,7 @@ int main() {
         Color teamP = BLUE;
         Color predatorP = YELLOW;
         Color preyP = RED;
-        boids.at(/*22+i*/32)=new Boid(posP,dirP,speedP,mDisP,aDisP,gDisP,teamP,predatorP,preyP);
+        boids.at(22+i)=new Boid(posP,dirP,speedP,mDisP,aDisP,gDisP,teamP,predatorP,preyP);
     }
 
     //set up walls

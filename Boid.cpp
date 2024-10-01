@@ -25,8 +25,7 @@ Vector2 Boid::avoidPredator(std::array<Boid*,BOIDS_NUMBER> others){
     Vector2 res{0.0f,0.0f};
     float nBoids=0.0f;
     for (Boid* boid : others){
-        if(boid==this)continue; //not self
-        else{
+        if(boid!=this){//not self
             float otherDot = Vector2DotProduct(direction,Vector2Normalize(boid->getPosition()-position));
             if(boid->getTeam()==predator && otherDot>=0 && Vector2Distance(position,boid->getPosition())<minimumDistance*3.f){ //if in front and closer than minimum
                 nBoids++;
@@ -70,8 +69,7 @@ Vector2 Boid::align(std::array<Boid*,BOIDS_NUMBER> others){
     Vector2 res{0.0f,0.0f};
     float nBoids=0.0f;
     for (Boid* boid : others){
-        if(boid==this)continue; //not self
-        else{
+        if(boid!=this){//not self
             float otherDot = Vector2DotProduct(direction,Vector2Normalize(boid->getPosition()-position));
             if(otherDot>=0 && Vector2Distance(position,boid->getPosition())<alignDistance){ //if in front and closer than maximum 
                 nBoids++;
@@ -87,10 +85,9 @@ Vector2 Boid::group(std::array<Boid*,BOIDS_NUMBER> others){
     Vector2 res{0.0f,0.0f};
     float nBoids=0.0f;
     for (Boid* boid : others){
-        if(boid==this)continue; //not self
-        else{
+        if(boid!=this){//not self
             float otherDot = Vector2DotProduct(direction,Vector2Normalize(boid->getPosition()-position));
-            if((boid->getTeam()==team || boid->getTeam()==prey) && otherDot>=0 && Vector2Distance(position,boid->getPosition())<groupDistance){ //if in front and closer than maximum 
+            if(boid->getTeam()==team && otherDot>=0 && Vector2Distance(position,boid->getPosition())<groupDistance){ //if in front and closer than maximum 
                 nBoids++;
                 res= res*(1.0f-(1.0f/nBoids))+ Vector2Normalize(boid->getPosition()-position)*(1.0f/nBoids); // get direction to other -> normalize -> scale to num
             }
@@ -102,7 +99,7 @@ Vector2 Boid::group(std::array<Boid*,BOIDS_NUMBER> others){
 void Boid::update(std::array<Boid*,BOIDS_NUMBER> others, std::array<Obstacle*,OBSTACLES_NUMBER> obstacles){
     Vector2 influence = separate(others)*weights[0]+ avoidObstacles(obstacles)*weights[1] + align(others)*weights[2] + group(others)*weights[3] + avoidPredator(others) * 0.8f;
     direction = direction + influence ;//+ (Vector2Normalize(GetMousePosition()-position)*0.2f)*(followMouse?1.0f:-1.0f);
-    if(team==BLUE) direction = direction + Vector2Normalize(GetMousePosition()-position)*0.5f;
+    //if(team==BLUE) direction = direction + Vector2Normalize(GetMousePosition()-position)*0.5f;
     direction = Vector2Normalize(direction);
     /*if(abs(Vector2Angle(oldDirection,direction)*(180.f/PI))>45){
         if(Vector2Angle(oldDirection,direction)*(180.f/PI)<0){
