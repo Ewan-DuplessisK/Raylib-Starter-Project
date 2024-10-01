@@ -2,10 +2,12 @@
 
 #include <iostream>
 
-Boid::Boid(Vector2 posP, Vector2 dirP, float speedP,float mDisP, float aDisp, float gDisP,Color teamP,Color predatorP,Color preyP):
-position(posP),direction(dirP),speed(speedP),minimumDistance(mDisP),alignDistance(aDisp),groupDistance(gDisP),team(teamP),predator(predatorP),prey(preyP){}
+std::vector<Boid*> Boid::pendingKill={};
 
-Vector2 Boid::separate(std::array<Boid*,BOIDS_NUMBER> others){
+Boid::Boid(Vector2 posP, Vector2 dirP, float speedP, float mDisP,float aDisP,float gDisP,float cDist,Color teamP,Color predatorP,Color preyP,std::array<float,7> weightsP):
+position(posP),direction(dirP),speed(speedP),minimumDistance(mDisP),alignDistance(aDisP),groupDistance(gDisP),chaseDistance(cDist),team(teamP),predator(predatorP),prey(preyP), weights(weightsP){}
+
+Vector2 Boid::separate(std::vector<Boid*> others){
     Vector2 res{0.0f,0.0f};
     float nBoids=0.0f;
     for (Boid* boid : others){
@@ -21,7 +23,7 @@ Vector2 Boid::separate(std::array<Boid*,BOIDS_NUMBER> others){
     return res;
 }
 
-Vector2 Boid::avoidPredator(std::array<Boid*,BOIDS_NUMBER> others){
+Vector2 Boid::avoidPredator(std::vector<Boid*> others){
     Vector2 res{0.0f,0.0f};
     float nBoids=0.0f;
     for (Boid* boid : others){
@@ -65,7 +67,7 @@ Vector2 Boid::avoidObstacles(std::array<Obstacle*,OBSTACLES_NUMBER> obstacles){
     return res;
 }
 
-Vector2 Boid::align(std::array<Boid*,BOIDS_NUMBER> others){
+Vector2 Boid::align(std::vector<Boid*> others){
     Vector2 res{0.0f,0.0f};
     float nBoids=0.0f;
     for (Boid* boid : others){
@@ -81,7 +83,7 @@ Vector2 Boid::align(std::array<Boid*,BOIDS_NUMBER> others){
     
 }
 
-Vector2 Boid::group(std::array<Boid*,BOIDS_NUMBER> others){
+Vector2 Boid::group(std::vector<Boid*> others){
     Vector2 res{0.0f,0.0f};
     float nBoids=0.0f;
     for (Boid* boid : others){
@@ -96,10 +98,46 @@ Vector2 Boid::group(std::array<Boid*,BOIDS_NUMBER> others){
     return res;
 }
 
-void Boid::update(std::array<Boid*,BOIDS_NUMBER> others, std::array<Obstacle*,OBSTACLES_NUMBER> obstacles){
-    Vector2 influence = separate(others)*weights[0]+ avoidObstacles(obstacles)*weights[1] + align(others)*weights[2] + group(others)*weights[3] + avoidPredator(others) * 0.8f;
-    direction = direction + influence ;//+ (Vector2Normalize(GetMousePosition()-position)*0.2f)*(followMouse?1.0f:-1.0f);
-    //if(team==BLUE) direction = direction + Vector2Normalize(GetMousePosition()-position)*0.5f;
+Vector2 Boid::chasePrey(std::vector<Boid*> others){
+    Vector2 res{0.0f,0.0f};
+    float nBoids=0.0f;
+    for (Boid* boid : others){
+        if(boid!=this){//not self
+            float otherDot = Vector2DotProduct(direction,Vector2Normalize(boid->getPosition()-position));
+            if(boid->getTeam()==prey && otherDot>=0 && Vector2Distance(position,boid->getPosition())<chaseDistance){ //if in front and closer than maximum 
+                nBoids++;
+                res= res*(1.0f-(1.0f/nBoids))+ Vector2Normalize(boid->getPosition()-position)*(1.0f/nBoids); // get direction to other -> normalize -> scale to num
+                if(Vector2Distance(position,boid->getPosition())<minimumDistance*0.8f){
+                    pendingKill.push_back(boid);
+                }
+            }
+        }
+    }
+    return res;
+}
+
+Vector2 Boid::mouseInfluence(){
+    Vector2 res{0.0f,0.0f};
+    if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+        followMouse=true;
+        avoidMouse=false;
+    }
+    if(IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)){
+        followMouse=false;
+        avoidMouse=true;
+    }
+    if(IsMouseButtonReleased(MOUSE_BUTTON_LEFT))followMouse=false;
+    if(IsMouseButtonReleased(MOUSE_BUTTON_RIGHT))avoidMouse=false;
+
+    if(followMouse) res = Vector2Normalize(GetMousePosition()-position);
+    if(avoidMouse) res = Vector2Negate(Vector2Normalize(GetMousePosition()-position));
+
+    return res;
+}
+
+void Boid::update(std::vector<Boid*> others, std::array<Obstacle*,OBSTACLES_NUMBER> obstacles){
+    Vector2 influence = separate(others)*weights[0]+ avoidObstacles(obstacles)*weights[1] + align(others)*weights[2] + group(others)*weights[3] + chasePrey(others)*weights[4] + avoidPredator(others) * weights[5] + mouseInfluence() * weights[6];
+    direction = direction + influence ;
     direction = Vector2Normalize(direction);
     /*if(abs(Vector2Angle(oldDirection,direction)*(180.f/PI))>45){
         if(Vector2Angle(oldDirection,direction)*(180.f/PI)<0){

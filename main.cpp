@@ -1,13 +1,16 @@
 #include "raylib.h"
 #include <iostream>
+#include <vector>
+
 #include "Boid.h"
 
 using namespace std;
 
 int main() {
     SetRandomSeed(time(0));
-    
-    array<Boid*,BOIDS_NUMBER> boids{};
+
+    vector<Boid*> boids;
+    //array<Boid*,BOIDS_NUMBER> boids{};
     array<Obstacle*,OBSTACLES_NUMBER> obstacles{};
 
     //set up boids
@@ -18,10 +21,12 @@ int main() {
         float mDisP = 30.f;
         float aDisP = 150.f;
         float gDisP = 200.f;
+        float cDisP = 150.f;
+        std::array<float,7> weightsP = {0.40,0.30,0.25,0.05,0.6,1.f,0.3}; //separate, avoidObstacles, align, group, chasePrey, avoidPredator, mouse influence
         Color teamP = RED;
         Color predatorP = BLUE;
         Color preyP = YELLOW;
-        boids.at(i)=new Boid(posP,dirP,speedP,mDisP,aDisP,gDisP,teamP,predatorP,preyP);
+        boids.push_back(new Boid(posP,dirP,speedP,mDisP,aDisP,gDisP,cDisP,teamP,predatorP,preyP,weightsP));
     }
     for(int i=0;i<BOIDS_NUMBER/3;i++){
         Vector2 posP = Vector2{float(GetRandomValue(11,589)),float(GetRandomValue(11,589))};
@@ -30,10 +35,12 @@ int main() {
         float mDisP = 30.f;
         float aDisP = 150.f;
         float gDisP = 200.f;
+        float cDisP = 150.f;
+        std::array<float,7> weightsP = {0.40,0.30,0.25,0.05,1.f,0.6,0.3}; //separate, avoidObstacles, align, group, chasePrey, avoidPredator, mouse influence
         Color teamP = YELLOW;
         Color predatorP = RED;
         Color preyP = BLUE;
-        boids.at(11+i)=new Boid(posP,dirP,speedP,mDisP,aDisP,gDisP,teamP,predatorP,preyP);
+        boids.push_back(new Boid(posP,dirP,speedP,mDisP,aDisP,gDisP,cDisP,teamP,predatorP,preyP,weightsP));
     }
     for(int i=0;i<BOIDS_NUMBER/3;i++){
         Vector2 posP = Vector2{float(GetRandomValue(11,589)),float(GetRandomValue(11,589))};
@@ -42,10 +49,12 @@ int main() {
         float mDisP = 30.f;
         float aDisP = 150.f;
         float gDisP = 200.f;
+        float cDisP = 150.f;
+        std::array<float,7> weightsP = {0.40,0.30,0.25,0.05,0.6,0.6,0.3}; //separate, avoidObstacles, align, group, chasePrey, avoidPredator, mouse influence
         Color teamP = BLUE;
         Color predatorP = YELLOW;
         Color preyP = RED;
-        boids.at(22+i)=new Boid(posP,dirP,speedP,mDisP,aDisP,gDisP,teamP,predatorP,preyP);
+        boids.push_back(new Boid(posP,dirP,speedP,mDisP,aDisP,gDisP,cDisP,teamP,predatorP,preyP,weightsP));
     }
 
     //set up walls
@@ -80,9 +89,14 @@ int main() {
             //DrawTexturePro(boidTex,{0,0,512,512},{boid->getPosition().x-5.0f,boid->getPosition().y-5.0f,10,10},{5.f,5.f},angle,WHITE);
             
         }
+        for(Boid* toKill: Boid::pendingKill){
+            boids.erase(std::remove(boids.begin(), boids.end(), toKill), boids.end());
+        }
+        Boid::pendingKill={};
         EndDrawing();
     }
 
     CloseWindow();
     return 0;
 }
+//= {0.40,0.30,0.25,0.05}
