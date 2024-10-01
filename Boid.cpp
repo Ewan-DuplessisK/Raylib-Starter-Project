@@ -2,7 +2,8 @@
 
 #include <iostream>
 
-Boid::Boid(Vector2 posP, Vector2 dirP, float speedP,float mDisP, float aDisp, float gDisP):position(posP),direction(dirP),speed(speedP),minimumDistance(mDisP),alignDistance(aDisp),groupDistance(gDisP){}
+Boid::Boid(Vector2 posP, Vector2 dirP, float speedP,float mDisP, float aDisp, float gDisP,Color teamP,Color predatorP,Color preyP):
+position(posP),direction(dirP),speed(speedP),minimumDistance(mDisP),alignDistance(aDisp),groupDistance(gDisP),team(teamP),predator(predatorP),prey(preyP){}
 
 Vector2 Boid::separate(std::array<Boid*,BOIDS_NUMBER> others){
     Vector2 res{0.0f,0.0f};
@@ -99,8 +100,9 @@ Vector2 Boid::group(std::array<Boid*,BOIDS_NUMBER> others){
 }
 
 void Boid::update(std::array<Boid*,BOIDS_NUMBER> others, std::array<Obstacle*,OBSTACLES_NUMBER> obstacles){
-    Vector2 influence = separate(others)*weights[0]+ avoidObstacles(obstacles)*weights[1] + align(others)*weights[2] + group(others)*weights[3] + avoidPredator(others) * 0.1f;
+    Vector2 influence = separate(others)*weights[0]+ avoidObstacles(obstacles)*weights[1] + align(others)*weights[2] + group(others)*weights[3] + avoidPredator(others) * 0.8f;
     direction = direction + influence ;//+ (Vector2Normalize(GetMousePosition()-position)*0.2f)*(followMouse?1.0f:-1.0f);
+    if(team==BLUE) direction = direction + Vector2Normalize(GetMousePosition()-position)*0.5f;
     direction = Vector2Normalize(direction);
     /*if(abs(Vector2Angle(oldDirection,direction)*(180.f/PI))>45){
         if(Vector2Angle(oldDirection,direction)*(180.f/PI)<0){

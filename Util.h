@@ -4,7 +4,7 @@
 #include "raymath.h"
 
 #define BOIDS_NUMBER 33
-#define OBSTACLES_NUMBER 6
+#define OBSTACLES_NUMBER 4
 
 static Vector2 operator+ (Vector2 left,Vector2 right){
     return Vector2Add(left,right);

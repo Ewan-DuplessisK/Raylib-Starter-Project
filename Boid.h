@@ -5,7 +5,7 @@
 class Boid
 {
 public:
-    Boid(Vector2 posP, Vector2 dirP, float speedP, float mDisP,float aDisP,float gDisP);
+    Boid(Vector2 posP, Vector2 dirP, float speedP, float mDisP,float aDisP,float gDisP,Color teamP,Color predatorP,Color preyP);
     ~Boid(){}
     Vector2 getPosition(){return position;}
     Vector2 getDirection(){return direction;}
