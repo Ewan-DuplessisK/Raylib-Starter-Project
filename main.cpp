@@ -81,12 +81,7 @@ int main() {
         }
         for(Boid* boid:boids){
             DrawCircle(boid->getPosition().x,boid->getPosition().y,10,boid->getTeam());
-            //cout<<boid->getDirection().x<<" "<<boid->getDirection().y<<endl;
-            //cout << Vector2Angle({1.f,0.f},boid->getDirection())*(180.f/PI)<<endl;
-            //DrawPoly(boid->getPosition(), 3, 20,Vector2Angle({1.f,0.f},boid->getDirection())*(180.f/PI), BLUE);
             boid->update(boids,obstacles);
-            //float angle=Vector2Angle({1.f,0.f},boid->getDirection())*(180.f/PI);
-            //DrawTexturePro(boidTex,{0,0,512,512},{boid->getPosition().x-5.0f,boid->getPosition().y-5.0f,10,10},{5.f,5.f},angle,WHITE);
             
         }
         for(Boid* toKill: Boid::pendingKill){
