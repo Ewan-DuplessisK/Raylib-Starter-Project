@@ -135,6 +135,10 @@ Vector2 Boid::mouseInfluence(){
     return res;
 }
 
+Vector2 Boid::moveTowardsTarget(Vector2 target){
+    return Vector2Normalize(target-position);
+}
+
 void Boid::update(std::vector<Boid*> others, std::array<Obstacle*,OBSTACLES_NUMBER> obstacles){
     Vector2 influence = separate(others)*weights[0]+ avoidObstacles(obstacles)*weights[1] + align(others)*weights[2] + group(others)*weights[3] + chasePrey(others)*weights[4] + avoidPredator(others) * weights[5] + mouseInfluence() * weights[6];
     direction = direction + influence ;

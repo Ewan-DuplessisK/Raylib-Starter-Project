@@ -4,11 +4,6 @@
 
 Grid::Grid(){}
 
-/*struct Node{
-std::map<Node*,float> neighbors;
-Vector2 mapPos;
-};*/
-
 bool compare_float(float x, float y, float epsilon = 0.01f){
     return(fabs(x - y) < epsilon);
 }
@@ -126,3 +121,6 @@ Path Grid::solveAStar(std::vector<Node*> graph){
     return Path{std::vector<Node*>{},-1.f};
 }
 
+void Grid::Draw(){
+    
+}

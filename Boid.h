@@ -25,6 +25,7 @@ private:
     Vector2 chasePrey(std::vector<Boid*> others);
     Vector2 avoidPredator(std::vector<Boid*> others);
     Vector2 mouseInfluence();
+    Vector2 moveTowardsTarget(Vector2 target);
     Vector2 position;
     Vector2 direction;
     float speed;

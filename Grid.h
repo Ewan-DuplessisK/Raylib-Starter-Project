@@ -27,5 +27,6 @@ public:
     ~Grid(){}
     Path solveDijKstra(std::vector<Node*>);
     Path solveAStar(std::vector<Node*>);
+    void Draw();
     
 };
