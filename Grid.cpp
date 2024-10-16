@@ -1,5 +1,7 @@
 ﻿#include "Grid.h"
 
+#include <raymath.h>
+
 Grid::Grid(){}
 
 /*struct Node{
@@ -70,7 +72,8 @@ Path Grid::solveAStar(std::vector<Node*> graph){
         AStarNode* n;
         n->node=node;
     }
-    AStarGraph.at(0)->fCost=0;
+    AStarGraph.at(0)->fCost=0; //Vector.begin()=start, Vector.last()=goal
+    Vector2 goalPos = graph.at(graph.size()-1)->mapPos;
     openList.push_back(AStarGraph.at(0));
 
     while (!openList.empty()){
@@ -84,21 +87,40 @@ Path Grid::solveAStar(std::vector<Node*> graph){
         openList.erase(std::remove(openList.begin(), openList.end(), currNode), openList.end());
 
         if(currNode->node==graph.at(graph.size()-1)){
-            //TODO Backtrack
+            std::vector<Node*>rPath;
+            float cost = currNode->fCost;
+            rPath.push_back(currNode->node);
+            AStarNode* tNode = currNode->parent;
+            while (tNode!=nullptr){
+                rPath.push_back(tNode->node);
+                tNode=tNode->parent;
+            }
+            std::reverse(rPath.begin(),rPath.end());
+            return Path{rPath,cost};
         }
         else{
-            for(auto pair : currNode->node->neighbors){
+            for(auto pair : currNode->node->neighbors){ //for each neighbor
                 AStarNode* tmp;
-                for(AStarNode* n:AStarGraph){ //find_if
+                for(AStarNode* n:AStarGraph){ //find_if, get AStarNode from Node
                     if(n->node==pair.first)tmp=n;
                 }
-                if(std::find(closedList.begin(),closedList.end(),tmp)!=closedList.end()){//not in closed list
-                    
+                if(std::find(closedList.begin(),closedList.end(),tmp)!=closedList.end()){//if tmp not in closed list
+                    float gCost = currNode->gCost+currNode->node->neighbors.at(tmp->node);
+                    float hCost = abs(Vector2Distance(goalPos,tmp->node->mapPos)); //straight distance between position and goal
+                    float fCost = gCost+hCost;
+                    if(std::find(openList.begin(),openList.end(),tmp)==openList.end()){
+                        openList.push_back(tmp);
+                    }
+                    if(gCost<tmp->gCost){
+                        tmp->gCost=gCost;
+                        tmp->hCost=hCost;
+                        tmp->fCost=fCost;
+                        tmp->parent=currNode;
+                    }
                 }
-                
             }
         }
     }
-    
+    return Path{std::vector<Node*>{},-1.f};
 }
 
