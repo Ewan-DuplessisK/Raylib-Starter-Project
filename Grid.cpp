@@ -68,9 +68,11 @@ Path Grid::solveAStar(std::vector<Node*> graph){
     std::vector<AStarNode*> closedList;
 
     std::vector<AStarNode*> AStarGraph;
-    for(Node* node:graph){
-        AStarNode* n;
-        n->node=node;
+    for(int i=0;i<graph.size();i++){
+        AStarGraph.push_back(new AStarNode);
+        AStarNode* curr = AStarGraph.at(i);
+        curr->node=graph.at(i);
+        curr->gCost=FLT_MAX;
     }
     AStarGraph.at(0)->fCost=0; //Vector.begin()=start, Vector.last()=goal
     Vector2 goalPos = graph.at(graph.size()-1)->mapPos;
